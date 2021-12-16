@@ -6,6 +6,7 @@ import 'addnote.dart';
 import 'shoppinglist.dart';
 import 'todolist.dart';
 import 'todooperations.dart';
+import 'drawing.dart';
 // Uncomment lines 7 and 10 to view the visual layout at runtime.
 // import 'package:flutter/rendering.dart' show debugPaintSizeEnabled;
 
@@ -79,7 +80,7 @@ class HomeScreen extends StatelessWidget {
           onPressed: () {
             Navigator.push(
               context,
-              MaterialPageRoute(builder: (context) => NotebookScreen()),
+              MaterialPageRoute(builder: (context) => DrawingScreen()),
             );
           },
         ),

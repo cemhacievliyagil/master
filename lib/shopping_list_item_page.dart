@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'item.dart';
 import 'item_service.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class ShoppingListItemPage extends StatefulWidget {
   const ShoppingListItemPage({Key? key}) : super(key: key);
@@ -11,22 +13,40 @@ class ShoppingListItemPage extends StatefulWidget {
 
 class _ShoppingListItemPageState extends State<ShoppingListItemPage> {
   @override
-  itemservice? itemservice1;
+  Item? itemservice1;
   void initState() {
-    itemservice1 = itemservice();
+    itemservice1 = Item(item: "");
     super.initState();
   }
 
+  CollectionReference firestore =
+      FirebaseFirestore.instance.collection('items');
   Widget build(BuildContext context) {
     return FutureBuilder(
-      future: itemservice1?.fetchItems(),
-      builder: (BuildContext context, AsyncSnapshot<List<item>> snapshot) {
+      future: firestore.get(),
+      builder: (BuildContext context, snapshot) {
         if (snapshot.hasData) {
           return ListView.builder(
-            itemCount: snapshot.data?.length,
+            itemCount: (snapshot.data! as QuerySnapshot).docs.length,
             itemBuilder: (BuildContext context, int index) {
-              item item1 = snapshot.data![index];
-              return ListTile(title: Text(item1.name));
+              DocumentSnapshot ds =
+                  (snapshot.data! as QuerySnapshot).docs[index];
+              return ListTile(
+                  title: Container(
+                      padding: EdgeInsets.zero,
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: <Widget>[
+                          Text(
+                              "${(snapshot.data! as QuerySnapshot).docs[index]['item']}"),
+                          FlatButton(
+                              onPressed: () {
+                                firestore.doc(ds.id).delete();
+                                setState(() {});
+                              },
+                              child: Icon(Icons.delete)),
+                        ],
+                      )));
             },
           );
         }

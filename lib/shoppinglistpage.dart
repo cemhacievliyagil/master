@@ -15,10 +15,10 @@ class ShoppingListPage_State extends State<ShoppingListPage> {
   static Future<List<item>>? _future;
   int _selectedindex = 0;
   final PageController pageController = PageController();
-  itemservice? itemservice1;
+  Item? itemservice1;
   final scaffoldstate = GlobalKey<ScaffoldState>();
   void initState() {
-    itemservice1 = itemservice();
+    itemservice1 = Item(item: "");
     pageController.addListener(() {
       int currentIndex = pageController.page!.round();
       if (currentIndex != _selectedindex) {
@@ -42,10 +42,8 @@ class ShoppingListPage_State extends State<ShoppingListPage> {
               context: context,
               builder: (BuildContext context) => ItemDialog());
           if (itemname.isNotEmpty) {
-            var item1 = item(name: itemname);
-
             try {
-              await itemservice?.addItem(item1.toJson());
+              await Item?.addItem(itemname);
               setState(() {});
             } catch (e) {
               scaffoldstate.currentState!

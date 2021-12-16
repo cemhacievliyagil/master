@@ -1,34 +1,30 @@
-import 'dart:convert';
-import 'dart:math';
+import 'package:firebase_core/firebase_core.dart';
+import 'package:flutter/material.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
-import 'package:flutter_application_1/item.dart';
-import 'package:http/http.dart' as http;
+class Item {
+  Item({required this.item, this.id = ""});
 
-class itemservice {
-  static final String serviceurl =
-      'https://kesali-shopping.herokuapp.com/item/';
+  Item.fromJson(Map<String, Object?> json)
+      : this(
+          item: json['item']! as String,
+        );
 
-  Future<List<item>> fetchItems() async {
-    final response = await http.get(serviceurl);
+  final String item;
+  final String id;
 
-    if (response.statusCode == 200) {
-      Iterable items = jsonDecode(response.body); //iterable objesine dönüşüyor
-      return items
-          .map((Item) => item.fromJson(Item))
-          .toList(); //dart objesine dönüşüyor
-    } else {
-      throw Exception("Error!");
-    }
+  Map<String, Object?> toJson() {
+    return {
+      'item': item,
+    };
   }
 
-  static Future<item> addItem(String itemjson) async {
-    final response = await http.post(serviceurl,
-        headers: {'content-type': 'applicaton/json'}, body: itemjson);
-    if (response.statusCode == 201) {
-      Map<String, dynamic> item2 = jsonDecode(response.body);
-      return item.fromJson(item2);
-    } else {
-      throw Exception(response.statusCode);
-    }
+  static final itemsRef = FirebaseFirestore.instance.collection('items');
+
+  static Future<void> addItem(String item1) async {
+    // Obtain science-fiction movies
+
+    // Add a movie
+    await itemsRef.add({'item': item1});
   }
 }
